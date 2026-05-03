@@ -3,17 +3,15 @@
     <img src="assets/fastdem.svg" align="center" height="46" alt="">
     FastDEM
   </h1>
-
-  <a href="https://github.com/Ikhyeon-Cho/FastDEM"><img src="https://img.shields.io/badge/C++17-00599C?logo=cplusplus&logoColor=white" /></a>
-  <a href="#start-with-ros1"><img src="https://img.shields.io/badge/ROS1-Noetic-blue" /></a>
-  <a href="#start-with-ros2"><img src="https://img.shields.io/badge/ROS2-Humble+-teal" /></a>
-  <a href="https://github.com/Ikhyeon-Cho/FastDEM/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-BSD--3--Clause-%2328A745" /></a>
-  <a href="https://github.com/Ikhyeon-Cho/FastDEM/actions/workflows/build.yml"><img src="https://github.com/Ikhyeon-Cho/FastDEM/actions/workflows/build.yml/badge.svg" /></a>
 </div>
 
 <p align="center"><i><b>Ultra-fast elevation mapping</b> on <b>embedded</b> robots — <b>100+ Hz</b> on Jetson Orin</i></p>
 
-<p align="center"><b><a href="#start-with-ros1">ROS1</a></b> · <b><a href="#start-with-ros2">ROS2</a></b> · <b><a href="#use-fastdem-as-a-c-library">C++ Library</a></b></p>
+<p align="center">
+  <a href="#start-with-ros1">ROS1</a> ·
+  <a href="#start-with-ros2">ROS2</a> ·
+  <a href="#use-fastdem-as-a-c-library">C++ API</a>
+</p>
 
 <p align="center">
   <img src="assets/fastdem_lidar.gif" width="49%" alt="FastDEM real-time elevation mapping with LiDAR point cloud" />
@@ -21,8 +19,7 @@
   <img src="assets/fastdem_global.gif" width="97.5%" alt="FastDEM global elevation mapping in outdoor environment" />
 </p>
 
-FastDEM is a lightweight C++17 library for real-time dense elevation mapping from LiDAR and RGB-D point clouds, without GPU.
-It provides a high-performance mapping core with incremental updates, local/global mapping modes, and built-in terrain post-processing.
+**FastDEM** is a **lightweight elevation mapping engine** for mobile robots that need dense terrain maps at control-loop rates. It incrementally fuses LiDAR or RGB-D point clouds into local or global elevation maps. The library runs entirely on CPU, and supports terrain post-processing for downstream navigation and traversability analysis.
 
 **Related projects:**
 - **EviGround** — (in preparation)
@@ -32,12 +29,12 @@ It provides a high-performance mapping core with incremental updates, local/glob
 
 ## Features
 
-* **Fast** — 100+ Hz on Jetson Orin. ~10ms per scan, on CPU alone.
-* **Lightweight** — Just Eigen at core. No PCL, OpenCV, or CUDA required.
-* **ROS-agnostic** — Clean C++ API, with optional ROS support.
+* **Fast** — 100+ Hz on Jetson Orin. ~10ms per scan, on CPU alone
+* **Lightweight** — No <i>PCL, OpenCV, or CUDA required</i>. Just Eigen at core.
+* **ROS-agnostic** — Clean C++ API, with optional ROS adapters
 * **Sensor-Aware** — Physics-based sensor models for LiDAR and RGB-D range measurements.
 * **Multiple Estimators** — Kalman Filter (parametric), P² Quantile estimator (non-parametric).
-* **Local + Global Mapping** — Robot-centric or map-centric terrain mapping.
+* **Local + Global Mapping** — Support both robot-centric / map-centric implementation
 * **Post-processing** — Raycasting, Uncertainty fusion, Inpainting, Feature extraction, and more.
 
 ---
