@@ -98,7 +98,7 @@ class MappingNode : public rclcpp::Node {
 
     for (const auto& topic : cfg_.topics.input_scans)
       scan_subs_.push_back(this->create_subscription<Cloud>(
-          topic, rclcpp::SensorDataQoS(),
+          topic, rclcpp::QoS(rclcpp::KeepLast(5)).reliable(),
           std::bind(&MappingNode::scanCallback, this, std::placeholders::_1)));
 
     pub_scan_         = this->create_publisher<Cloud>("~/scan/preprocessed", 1);
