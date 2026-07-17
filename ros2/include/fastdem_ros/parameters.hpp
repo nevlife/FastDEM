@@ -30,6 +30,7 @@ struct NodeConfig {
     std::string map_frame{"map"};
     double max_wait_time = 0.1;
     double max_stale_time = 0.1;
+    bool use_latest_transform_fallback = false;
   } tf;
 
   fastdem::Config pipeline;
@@ -79,6 +80,7 @@ struct NodeConfig {
       read(n, "map_frame", cfg.tf.map_frame);
       read(n, "max_wait_time", cfg.tf.max_wait_time);
       read(n, "max_stale_time", cfg.tf.max_stale_time);
+      read(n, "use_latest_transform_fallback", cfg.tf.use_latest_transform_fallback);
     }
     if (auto n = yaml["logger"]) {
       read(n, "level", cfg.logger_level);
