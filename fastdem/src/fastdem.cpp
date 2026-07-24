@@ -5,6 +5,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <nanopcl/filters/crop.hpp>
@@ -181,12 +182,39 @@ PointCloud FastDEM::preprocessScan(const PointCloud& cloud,
   // Rotate covariances to map frame (R·Σ·Rᵀ)
   const Eigen::Matrix3f R =
       (T_world_base * T_base_sensor).rotation().cast<float>();
+
+  // Propagate robot-pose uncertainty into the map-frame height (z) variance. A point at
+  // horizontal range r from the sensor gains r^2 * tilt_var + z_var of z variance, so
+  // far/oblique points (worst-hit by a tilting vehicle on slope crests/toes) are
+  // down-weighted instead of baked in as confident bumps. Override (live odometry
+  // covariance) wins over the static config fallback; negatives disabled below.
+  const bool pose_noise_on = cfg_.pose_noise.enable;
+  const float tilt_var = std::max(
+      0.0f, pose_tilt_var_override_ >= 0.0f ? pose_tilt_var_override_
+                                            : cfg_.pose_noise.tilt_variance);
+  const float z_var = std::max(
+      0.0f, pose_z_var_override_ >= 0.0f ? pose_z_var_override_
+                                         : cfg_.pose_noise.z_variance);
+  const Eigen::Vector2f sensor_xy =
+      (T_world_base * T_base_sensor).translation().head<2>().cast<float>();
+
   for (size_t i : points.indices()) {
     auto& cov = points.covariance(i);
     cov = R * cov * R.transpose();
+    if (pose_noise_on) {
+      const Eigen::Vector2f p_xy = points.point(i).head<2>();
+      const float hr = (p_xy - sensor_xy).norm();
+      cov(2, 2) += hr * hr * tilt_var + z_var;
+    }
   }
 
   return points;
+}
+
+FastDEM& FastDEM::setPoseNoise(float tilt_variance, float z_variance) noexcept {
+  pose_tilt_var_override_ = tilt_variance;
+  pose_z_var_override_ = z_variance;
+  return *this;
 }
 
 void FastDEM::onScanPreprocessed(CloudCallback callback) {

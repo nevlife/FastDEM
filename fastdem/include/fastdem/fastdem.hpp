@@ -88,6 +88,11 @@ class FastDEM {
   /// Enable/disable raycasting (ghost obstacle removal)
   FastDEM& enableRaycasting(bool enabled = true) noexcept;
 
+  /// Override pose-noise variances at runtime (e.g. from live odometry covariance).
+  /// Requires pose_noise.enable in the config. Negative values fall back to the static
+  /// config value. Takes effect on the next integrate().
+  FastDEM& setPoseNoise(float tilt_variance, float z_variance) noexcept;
+
   /// Set calibration provider (sensor → base static transform)
   FastDEM& setCalibrationProvider(std::shared_ptr<Calibration> calibration) noexcept;
 
@@ -155,6 +160,10 @@ class FastDEM {
   // Optional callbacks
   CloudCallback on_preprocessed_;
   CloudCallback on_rasterized_;
+
+  // Runtime pose-noise override (< 0 => use static config value)
+  float pose_tilt_var_override_{-1.0f};
+  float pose_z_var_override_{-1.0f};
 };
 
 }  // namespace fastdem

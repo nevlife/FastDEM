@@ -56,6 +56,16 @@ sensor_model:
   constant:
     uncertainty: 0.03        # [m] σ
 
+# Propagate robot-pose uncertainty into the height measurement variance. A point at
+# horizontal range r gains r^2*tilt_variance + z_variance of z variance, down-weighting
+# far/oblique points that a tilting vehicle mis-places on slope crests/toes. tilt_variance
+# ~ (transient roll/pitch error)^2; z_variance ~ (local z error)^2. At r=10 m,
+# 0.002 rad^2 -> 0.2 m^2 added (far points strongly down-weighted); near points untouched.
+pose_noise:
+  enable: true
+  tilt_variance: 0.002       # [rad²] roll+pitch error variance (~2.5°)
+  z_variance: 0.0025         # [m²] height error variance (~0.05 m)
+
 # ─── Post-processing ───────────────────────────────
 raycasting:
   enabled: true

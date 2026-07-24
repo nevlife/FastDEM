@@ -122,6 +122,13 @@ Config parse(const YAML::Node& root) {
     }
   }
 
+  // Pose-noise propagation (optional)
+  if (auto n = root["pose_noise"]) {
+    load(n, "enable", cfg.pose_noise.enable);
+    load(n, "tilt_variance", cfg.pose_noise.tilt_variance);
+    load(n, "z_variance", cfg.pose_noise.z_variance);
+  }
+
   return cfg;
 }
 
